@@ -198,6 +198,7 @@ echo "192.168.1.2 hq-rtr.au-team.irpo\n172.16.2.1 docker.au-team.irpo\n 172.16.1
 systemctl restart dnsmasq
 timedatectl set-timezone Asia/Yekaterinburg
 timedatectl
+exec bash
 ```
 
 ## BR-SRV
@@ -214,10 +215,10 @@ echo -e "Authorized access only!" > /etc/openssh/banner
 echo nameserver 8.8.8.8 > /etc/resolv.conf
 timedatectl set-timezone Asia/Yekaterinburg
 timedatectl
+exec bash
 ```
 
 ## HQ-CLI
-## Рабочий
 ```
 hostnamectl set-hostname hq-cli.au-team.irpo
 mkdir /etc/net/ifaces/ens20
@@ -232,7 +233,6 @@ exec bash
 ```
 
 ## ISP
-## Рабочий
 ```
 hostnamectl set-hostname ISP
 mkdir /etc/net/ifaces/ens20

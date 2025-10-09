@@ -46,7 +46,7 @@ timedatectl
 ```
 sleep 1
 useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
-echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config"
+echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config" > /etc/openssh/sshd_config
 echo -e "Authorized access only!" > /etc/openssh/banner
 systemctl restart sshd
 systemctl restart network
@@ -65,25 +65,29 @@ timedatectl
 sleep 1
 ```
 ```
-apt-get update && apt-get install ansible -y
+apt-get update && apt-get install ansible sshpass -y
 echo -e "[servers]\nHQ-SRV ansible_host=192.168.1.10\nHQ-CLI ansible_host=192.168.2.10\n[servers:vars]\nansible_user=remote_user\nansible_port=2026\n[routers]\nHQ-RTR ansible_host=192.168.1.1\nBR-RTR ansible_host=192.168.3.1\n[routers:vars]\nansible_user=net_admin\nansible_password=P@ssw0rd\nansible_connection=network_cli\nansible_network_os=ios" > /etc/ansible/hosts
 echo -e "[defaults]\npython_interpreter=auto_silent" > /etc/ansible/ansible.cfg
 
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa -q
-ssh-copy-id -p 2026 remote_user@192.168.1.10 -f
-ssh-copy-id -p 2026 remote_user@192.168.2.10 -f
+sshpass -p 'P@ssw0rd' ssh-copy-id -p 2026 remote_user@192.168.1.10 -f -o StrictHostKeyChecking=no
+sshpass -p 'P@ssw0rd' ssh-copy-id -p 2026 remote_user@192.168.2.10 -f -o StrictHostKeyChecking=no
 ansible all -m ping
 ```
 ```
 apt-get update && apt-get install -y docker-compose docker-engine
 systemctl enable --now docker
-systemctl status docker
+sleep 2
 mount -o loop /dev/sr0
 docker load < /media/ALTLinux/docker/site_latest.tar
 docker load < /media/ALTLinux/docker/mariadb_latest.tar
-echo -e "services:\n  db:\n    image: mariadb\n    container_name: db\n    environment:\n      MYSQL_ROOT_PASSWORD: Passw0rd\n      MYSQL_DATABASE: testdb\n      MYSQL_USER: test\n      MYSQL_PASSWORD: Passw0rd\n    volumes:\n      - db_data:/var/lib/mysql\n    restart: always\n\n  testapp:\n    image: site\n    container_name: testapp\n    environment:\n      DB_TYPE: maria\n      DB_HOST: db\n      DB_NAME: testdb\n      DB_USER: test\n      DB_PASS: Passw0rd\n      DB_PORT: 3306\n    ports:\n      - \"8080:8000\"\n    restart: always\n\nvolumes:\n  db_data:" > /etc/ansible/hosts
-docker compose -f site.yml up -d && sleep 5 && docker exec -it db mysql -u root -p'Passw0rd' -e "CREATE DATABASE IF NOT EXISTS testdb; CREATE USER 'test'@'%' IDENTIFIED BY 'Passw0rd'; GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%'; FLUSH PRIVILEGES;"
+echo -e "services:\n  db:\n    image: mariadb\n    container_name: db\n    environment:\n      MYSQL_ROOT_PASSWORD: Passw0rd\n      MYSQL_DATABASE: testdb\n      MYSQL_USER: test\n      MYSQL_PASSWORD: Passw0rd\n    volumes:\n      - db_data:/var/lib/mysql\n    restart: always\n\n  testapp:\n    image: site\n    container_name: testapp\n    environment:\n      DB_TYPE: maria\n      DB_HOST: db\n      DB_NAME: testdb\n      DB_USER: test\n      DB_PASS: Passw0rd\n      DB_PORT: 3306\n    ports:\n      - \"8080:8000\"\n    restart: always\n\nvolumes:\n  db_data:" > docker-compose.yaml
+sleep 1
+docker compose up -d && sleep 5 && docker exec -it db mysql -u root -p'Passw0rd' -e "CREATE DATABASE IF NOT EXISTS testdb; CREATE USER 'test'@'%' IDENTIFIED BY 'Passw0rd'; GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%'; FLUSH PRIVILEGES;"
 ```
+> [!TIP]
+> Проверка что сайт точно работает: 
+> curl http://192.168.3.10:8080
 
 ## ISP
 ```

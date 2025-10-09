@@ -175,3 +175,38 @@ ip nat source static tcp 192.168.1.10 8080 172.16.1.2 80
 ip nat source static tcp 192.168.1.10 2026 172.16.1.2 2026
 write
 ```
+
+# Не работают сайты -> 
+### На BR-RTR
+no ip nat source static tcp 192.168.3.10 8080 172.16.2.2 80
+ip nat source static tcp 192.168.3.10 8080 172.16.2.2 8080
+
+### На HQ-RTR  
+no ip nat source static tcp 192.168.1.10 8080 172.16.1.2 80
+ip nat source static tcp 192.168.1.10 8080 172.16.1.2 8080
+
+```
+server {
+    listen 80;
+    server_name docker.au-team.irpo;
+    auth_basic "Restricted Access";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    location / {
+        proxy_pass http://172.16.2.2:80;  # ← Измените на порт 80
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+
+server {
+    listen 80;
+    server_name web.au-team.irpo;
+    location / {
+        proxy_pass http://172.16.1.2:80;  # ← Измените на порт 80
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+```

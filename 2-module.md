@@ -145,7 +145,8 @@ apt-get install chrony –y
 echo "server 127.0.0.1 iburst prefer\nhwtimestamp *\nlocal stratum 5\nallow 0/0" > /etc/chrony.conf
 systemctl enable --now chronyd
 systemctl restart chronyd
-apt-get update && apt-get install nginx -y
+apt-get update && apt-get install nginx apache2-htpasswd -y
+htpasswd -bc /etc/nginx/.htpasswd webc P@ssw0rd
 rm -f /etc/nginx/sites-available.d/default.conf
 echo -e "server {\n\tlisten 80;\n\tserver_name docker.au-team.irpo;\n\tauth_basic \"Restricted Access\";\n\tauth_basic_user_file /etc/nginx/.htpasswd;\n\tlocation / {\n\t\tproxy_pass http://172.16.2.2:8080;\n\t\tproxy_set_header Host \$host;\n\t\tproxy_set_header X-Real-IP \$remote_addr;\n\t\tproxy_set_header X-Forwarded-For \$remote_addr;\n\t}\n}\nserver {\n\tlisten 80;\n\tserver_name web.au-team.irpo;\n\tlocation / {\n\t\tproxy_pass http://172.16.1.2:8080;\n\t\tproxy_set_header Host \$host;\n\t\tproxy_set_header X-Real-IP \$remote_addr;\n\t\tproxy_set_header X-Forwarded-For \$remote_addr;\n\t}\n}" > /etc/nginx/sites-available.d/proxy.conf
 ln -s /etc/nginx/sites-available.d/proxy.conf /etc/nginx/sites-enabled.d/
@@ -182,8 +183,8 @@ no ip nat source static tcp 192.168.3.10 8080 172.16.2.2 80
 ip nat source static tcp 192.168.3.10 8080 172.16.2.2 8080
 
 ### На HQ-RTR  
-no ip nat source static tcp 192.168.1.10 8080 172.16.1.2 80
-ip nat source static tcp 192.168.1.10 8080 172.16.1.2 8080
+no ip nat source static tcp 192.168.1.10 8080 172.16.1.2 8080
+ip nat source static tcp 192.168.1.10 8080 172.16.1.2 80
 
 ```
 server {

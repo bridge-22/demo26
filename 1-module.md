@@ -191,7 +191,8 @@ echo 192.168.1.10/27 > /etc/net/ifaces/ens20/ipv4address
 echo default via 192.168.1.1 > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
-echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config"
+echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/banner" > /etc/openssh/sshd_config
+echo -e "Authorized access only!" > /etc/openssh/banner
 echo nameserver 8.8.8.8 > /etc/resolv.conf && apt-get update && apt-get install dnsmasq -y
 echo -e "no-resolv\nserver=8.8.8.8\ninterface=*\ndomain=au-team.irpo\naddress=/hq-rtr.au-team.irpo/192.168.1.1\nptr-record=1.1.168.192.in-addr.arpa,hq-rtr.au-team.irpo\naddress=/web.au-team.irpo/172.16.1.1\naddress=/hq-srv.au-team.irpo/192.168.1.10\nptr-record=10.1.168.192.in-addr.arpa,hq-srv.au-team.irpo\naddress=/hq-cli.au-team.irpo/192.168.2.10\nptr-record=10.2.168.192.in-addr.arpa,hq-cli.au-team.irpo\naddress=/br-srv.au-team.irpo/192.168.3.10\naddress=/br-rtr.au-team.irpo/192.168.3.1\naddress=/docker.au-team.irpo/172.16.2.1" > /etc/dnsmasq.conf
 echo "192.168.1.2 hq-rtr.au-team.irpo\n172.16.2.1 docker.au-team.irpo\n 172.16.1.1 web.au-team.irpo" >> /etc/hosts
@@ -210,7 +211,7 @@ echo 192.168.3.10/28 > /etc/net/ifaces/ens20/ipv4address
 echo default via 192.168.3.1 > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
-echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config"
+echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/banner" > /etc/openssh/sshd_config
 echo -e "Authorized access only!" > /etc/openssh/banner
 echo nameserver 8.8.8.8 > /etc/resolv.conf
 timedatectl set-timezone Asia/Yekaterinburg

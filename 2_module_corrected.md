@@ -5,7 +5,7 @@
 * Добавить CD-ROM с Additionals.iso на HQ-SRV, BR-SRV
 
 ## BR-SRV
-```
+```bash
 apt-get update && apt-get install wget dos2unix task-samba-dc -y
 sleep 1
 echo nameserver 192.168.1.10 > /etc/resolv.conf
@@ -52,15 +52,15 @@ ldbmodify -v -H /var/lib/samba/private/sam.ldb ntGen.ldif
 ```
 
 ## HQ-CLI
-```
+```bash
 reboot
 ```
-```
+```bash
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 reboot
 ```
-```
+```bash
 apt-get install sudo libsss_sudo -y
 control sudo public
 sed -i '19 a\
@@ -84,7 +84,7 @@ systemctl restart network
 ```
 
 ## BR-SRV
-```
+```bash
 apt-get install -y chrony
 echo "server 172.16.2.1 iburst prefer" > /etc/chrony.conf
 systemctl enable --now chronyd
@@ -93,7 +93,7 @@ chronyc sources
 timedatectl
 sleep 1
 ```
-```
+```bash
 apt-get update && apt-get install ansible sshpass -y
 echo -e "[servers]\nHQ-SRV ansible_host=192.168.1.10\nHQ-CLI ansible_host=192.168.2.10\n[servers:vars]\nansible_user=remote_user\nansible_port=2026\n[routers]\nHQ-RTR ansible_host=192.168.1.1\nBR-RTR ansible_host=192.168.3.1\n[routers:vars]\nansible_user=net_admin\nansible_password=P@ssw0rd\nansible_connection=network_cli\nansible_network_os=ios" > /etc/ansible/hosts
 echo -e "[defaults]\npython_interpreter=auto_silent" > /etc/ansible/ansible.cfg
@@ -102,7 +102,7 @@ sshpass -p 'P@ssw0rd' ssh-copy-id -p 2026 remote_user@192.168.1.10 -f -o StrictH
 sshpass -p 'P@ssw0rd' ssh-copy-id -p 2026 remote_user@192.168.2.10 -f -o StrictHostKeyChecking=no
 ansible all -m ping
 ```
-```
+```bash
 apt-get update && apt-get install -y docker-compose docker-engine
 systemctl enable --now docker
 sleep 2
@@ -120,7 +120,7 @@ curl http://192.168.3.10:8080
 
 ## HQ-SRV
 ### Нужно создать 2 новых диска
-```
+```bash
 apt-get update && apt-get install -y mdadm nfs-server && sleep 5
 mdadm --create --verbose /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
 mdadm --detail --scan | tee -a /etc/mdadm.conf
@@ -198,7 +198,7 @@ curl http://192.168.1.10
 > curl http://192.168.1.10
 
 ## HQ-CLI
-```
+```bash
 apt-get update && apt-get install -y nfs-clients && sleep 2
 mkdir -p /mnt/nfs
 echo "192.168.0.10:/raid/nfs /mnt/nfs nfs defaults,auto,_netdev 0 0" >> /etc/fstab
@@ -215,7 +215,7 @@ timedatectl
 ```
 
 ## BR-RTR
-```
+```bash
 en
 conf t
 ntp server 172.16.2.1
@@ -230,7 +230,7 @@ write
 ```
 
 ## HQ-RTR
-```
+```bash
 en
 conf t
 ip nat source static tcp 192.168.1.10 8080 172.16.1.2 80
@@ -239,7 +239,7 @@ write
 ```
 
 ## ISP
-```
+```bash
 apt-get install chrony –y
 echo "server 127.0.0.1 iburst prefer\nhwtimestamp *\nlocal stratum 5\nallow 0/0" > /etc/chrony.conf
 systemctl enable --now chronyd

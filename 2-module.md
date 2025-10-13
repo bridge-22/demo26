@@ -7,10 +7,11 @@
 ## BR-SRV
 ```
 apt-get update && apt-get install wget dos2unix task-samba-dc -y
-sleep 3
-echo nameserver 192.168.1.10 >> /etc/resolv.conf
-sleep 2
+sleep 1
+echo nameserver 192.168.1.10 > /etc/resolv.conf
 echo 192.168.3.10 br-srv.au-team.irpo >> /etc/hosts
+systemctl restart network
+sleep 3
 rm -rf /etc/samba/smb.conf
 samba-tool domain provision --realm=AU-TEAM.IRPO --domain=AU-TEAM --adminpass=P@ssw0rd --dns-backend=SAMBA_INTERNAL --server-role=dc --option='dns forwarder=192.168.1.10'
 mv -f /var/lib/samba/private/krb5.conf /etc/krb5.conf

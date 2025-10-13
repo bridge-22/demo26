@@ -84,6 +84,47 @@ curl http://192.168.3.10:8080
 > Проверка что сайт точно работает: 
 > curl http://192.168.3.10:8080
 
+## HQ-CLI
+```
+apt-get update && apt-get install bind-utils -y
+system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
+reboot
+```
+```
+apt-get install sudo libsss_sudo -y
+control sudo public
+sed -i '19 a\
+sudo_provider = ad' /etc/sssd/sssd.conf
+sed -i 's/services = nss, pam/services = nss, pam, sudo/' /etc/sssd/sssd.conf
+sed -i '28 a\
+sudoers: files sss' /etc/nsswitch.conf
+rm -rf /var/lib/sss/db/*
+sss_cache -E
+systemctl restart sssd
+```
+```
+apt-get update && apt-get install -y nfs-clients && sleep 2
+mkdir -p /mnt/nfs
+echo "192.168.0.10:/raid/nfs /mnt/nfs nfs defaults,auto,_netdev 0 0" >> /etc/fstab
+mount -a
+df -h | grep /mnt/nfs
+showmount -e 192.168.1.10
+sleep 2
+apt-get install -y chrony
+echo "server 172.16.1.1 iburst prefer" > /etc/chrony.conf
+systemctl enable --now chronyd
+systemctl restart chronyd
+chronyc sources
+timedatectl
+```
+```
+sleep 1
+useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
+echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config" > /etc/openssh/sshd_config
+echo -e "Authorized access only!" > /etc/openssh/banner
+systemctl restart sshd
+systemctl restart network
+```
 
 ## HQ-SRV
 ### Нужно создать 2 новых диска
@@ -163,31 +204,6 @@ curl http://192.168.1.10
 > [!TIP]
 > Проверка что сайт точно работает: 
 > curl http://192.168.1.10
-
-## HQ-CLI
-```
-apt-get update && apt-get install -y nfs-clients && sleep 2
-mkdir -p /mnt/nfs
-echo "192.168.0.10:/raid/nfs /mnt/nfs nfs defaults,auto,_netdev 0 0" >> /etc/fstab
-mount -a
-df -h | grep /mnt/nfs
-showmount -e 192.168.1.10
-sleep 2
-apt-get install -y chrony
-echo "server 172.16.1.1 iburst prefer" > /etc/chrony.conf
-systemctl enable --now chronyd
-systemctl restart chronyd
-chronyc sources
-timedatectl
-```
-```
-sleep 1
-useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
-echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config" > /etc/openssh/sshd_config
-echo -e "Authorized access only!" > /etc/openssh/banner
-systemctl restart sshd
-systemctl restart network
-```
 
 ## ISP
 ```

@@ -75,7 +75,7 @@ systemctl restart sssd
 reboot
 sudo -l -U hquser1
 ```
-```
+```bash
 sleep 1
 useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
 echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/sshd_config" > /etc/openssh/sshd_config

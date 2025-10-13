@@ -53,6 +53,9 @@ ldbmodify -v -H /var/lib/samba/private/sam.ldb ntGen.ldif
 
 ## HQ-CLI
 ```
+reboot
+```
+```
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 reboot

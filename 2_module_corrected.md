@@ -71,6 +71,8 @@ sudoers: files sss' /etc/nsswitch.conf
 rm -rf /var/lib/sss/db/*
 sss_cache -E
 systemctl restart sssd
+reboot
+sudo -l -U hquser1
 ```
 ```
 sleep 1

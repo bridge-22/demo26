@@ -117,26 +117,27 @@ apt-get install apache2 php8.2 apache2-mod_php8.2 mariadb-server php8.2-opcache 
 systemctl enable --now httpd2 mysqld
 mount -o loop /dev/sr0
 sleep 2
-expect << EOF
+expect << 'EOF'
 spawn mysql_secure_installation
-expect "Enter current password for root (enter for none):"
-send "\r"
-expect "Switch to unix_socket authentication *"
-send "n\r"
-expect "Change the root password? *"
-send "Y\r"
-expect "New password:"
-send "P@ssw0rd\r"
-expect "Re-enter new password:"
-send "P@ssw0rd\r"
-expect "Remove anonymous users? *"
-send "Y\r"
-expect "Disallow root login remotely? *"
-send "Y\r"
-expect "Remove test database and access to it? *"
-send "Y\r"
-expect "Reload privilege tables now? *"
-send "Y\r"
+sleep 1
+send "\r"          ;# current password – just Enter
+sleep 1
+send "n\r"         ;# unix_socket authentication
+sleep 1
+send "Y\r"         ;# change root password
+sleep 1
+send "P@ssw0rd\r"  ;# new password
+sleep 1
+send "P@ssw0rd\r"  ;# confirm password
+sleep 1
+send "Y\r"         ;# remove anonymous users
+sleep 1
+send "Y\r"         ;# disallow root login remotely
+sleep 1
+send "Y\r"         ;# remove test database
+sleep 1
+send "Y\r"         ;# reload privileges
+sleep 1
 expect eof
 EOF
 sleep 2

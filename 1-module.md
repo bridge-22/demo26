@@ -1,3 +1,20 @@
+## ISP
+```
+hostnamectl set-hostname ISP
+mkdir /etc/net/ifaces/ens20
+mkdir /etc/net/ifaces/ens21
+mkdir /etc/net/ifaces/ens22
+echo -e "BOOTPROTO=dhcp\nTYPE=eth" > /etc/net/ifaces/ens20/options
+echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/ifaces/ens21/options
+echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/ifaces/ens22/options
+echo 172.16.1.1/28 > /etc/net/ifaces/ens21/ipv4address
+echo 172.16.2.1/28 > /etc/net/ifaces/ens22/ipv4address
+sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/' /etc/net/sysctl.conf
+systemctl restart network
+
+apt-get update && apt-get install iptables -y && sleep 2 && iptables -t nat -A POSTROUTING -o ens20 -s 172.16.1.0/28 -j MASQUERADE && iptables -t nat -A POSTROUTING -o ens20 -s 172.16.2.0/28 -j MASQUERADE && iptables-save > /etc/sysconfig/iptables && sleep 2 && apt-get update; apt-get reinstall tzdata -y; timedatectl set-timezone Asia/Yekaterinburg; timedatectl && systemctl enable --now iptables && exec bash
+```
+
 ## HQ-RTR
 ```
 en
@@ -202,6 +219,20 @@ timedatectl
 exec bash
 ```
 
+## HQ-CLI
+```
+hostnamectl set-hostname hq-cli.au-team.irpo
+mkdir /etc/net/ifaces/ens20
+echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/ifaces/ens20/options
+echo 192.168.2.10/28	> /etc/net/ifaces/ens20/ipv4address
+echo default via 192.168.2.1 > /etc/net/ifaces/ens20/ipv4route
+systemctl restart network
+echo nameserver 8.8.8.8 > /etc/resolv.conf
+timedatectl set-timezone Asia/Yekaterinburg
+timedatectl
+exec bash
+```
+
 ## BR-SRV
 ```
 hostnamectl set-hostname br-srv.au-team.irpo;
@@ -217,35 +248,4 @@ echo nameserver 8.8.8.8 > /etc/resolv.conf
 timedatectl set-timezone Asia/Yekaterinburg
 timedatectl
 exec bash
-```
-
-## HQ-CLI
-```
-hostnamectl set-hostname hq-cli.au-team.irpo
-mkdir /etc/net/ifaces/ens20
-echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/ifaces/ens20/options
-echo 192.168.2.10/28	> /etc/net/ifaces/ens20/ipv4address
-echo default via 192.168.2.1 > /etc/net/ifaces/ens20/ipv4route
-systemctl restart network
-echo nameserver 8.8.8.8 > /etc/resolv.conf
-timedatectl set-timezone Asia/Yekaterinburg
-timedatectl
-exec bash
-```
-
-## ISP
-```
-hostnamectl set-hostname ISP
-mkdir /etc/net/ifaces/ens20
-mkdir /etc/net/ifaces/ens21
-mkdir /etc/net/ifaces/ens22
-echo -e "BOOTPROTO=dhcp\nTYPE=eth" > /etc/net/ifaces/ens20/options
-echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/ifaces/ens21/options
-echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/ifaces/ens22/options
-echo 172.16.1.1/28 > /etc/net/ifaces/ens21/ipv4address
-echo 172.16.2.1/28 > /etc/net/ifaces/ens22/ipv4address
-sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/' /etc/net/sysctl.conf
-systemctl restart network
-
-apt-get update && apt-get install iptables -y && sleep 2 && iptables -t nat -A POSTROUTING -o ens20 -s 172.16.1.0/28 -j MASQUERADE && iptables -t nat -A POSTROUTING -o ens20 -s 172.16.2.0/28 -j MASQUERADE && iptables-save > /etc/sysconfig/iptables && sleep 2 && apt-get update; apt-get reinstall tzdata -y; timedatectl set-timezone Asia/Yekaterinburg; timedatectl && systemctl enable --now iptables && exec bash
 ```

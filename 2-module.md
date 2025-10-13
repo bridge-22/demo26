@@ -1,3 +1,9 @@
+# Перед тем как выполнять 2 модуль нужно:
+* Добавить additionals.iso в AltPVE, ISO images
+* Полностью отключить HQ-SRV, BR-SRV
+* Добавить 2 пустых диска на HQ-SRV
+* Добавить CD-ROM с Additionals.iso на HQ-SRV, BR-SRV
+
 ## HQ-SRV
 ### Нужно создать 2 новых диска
 ```

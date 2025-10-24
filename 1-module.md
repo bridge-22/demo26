@@ -207,7 +207,7 @@ echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/if
 echo 192.168.1.10/27 > /etc/net/ifaces/ens20/ipv4address
 echo default via 192.168.1.1 > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
-useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
+useradd sshuser -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
 echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/banner" > /etc/openssh/sshd_config
 echo -e "Authorized access only!" > /etc/openssh/banner
 echo nameserver 8.8.8.8 > /etc/resolv.conf && apt-get update && apt-get install dnsmasq -y
@@ -242,7 +242,7 @@ echo -e "TYPE=eth\nBOOTPROTO=static\nCONFIG_IPV4=yes\nDISABLED=no" > /etc/net/if
 echo 192.168.3.10/28 > /etc/net/ifaces/ens20/ipv4address
 echo default via 192.168.3.1 > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
-useradd remote_user -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
+useradd sshuser -u 2026 && echo "P@ssw0rd" | passwd --stdin remote_user && gpasswd -a "remote_user" wheel && echo '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-wheel-nopasswd
 echo -e "Port 2026\nMaxAuthTries 2\nPasswordAuthentication yes\nAllowUsers remote_user\nBanner /etc/openssh/banner" > /etc/openssh/sshd_config
 echo -e "Authorized access only!" > /etc/openssh/banner
 echo nameserver 8.8.8.8 > /etc/resolv.conf

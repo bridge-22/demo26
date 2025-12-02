@@ -26,7 +26,7 @@ systemctl status --now rsyslog
 ```
 
 ## HQ-RTR
-```bash
+```assembly
 en
 conf t
 rsyslog host 192.168.1.10 mode tcp port 514
@@ -34,7 +34,7 @@ wr
 ```
 
 ## BR-RTR
-```bash
+```assembly
 en
 conf t
 rsyslog host 192.168.1.10 mode tcp port 514

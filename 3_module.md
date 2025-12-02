@@ -54,7 +54,7 @@ logger «Test»
 
 # Проверка
 ## HQ-SRV
-```bash
+```assembly
 ls /opt/
 logrotate -d /etc/logrotate.d/rsyslog 
 ```

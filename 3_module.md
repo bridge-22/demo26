@@ -1,6 +1,6 @@
 # rsyslog
 ## HQ-SRV
-```bash
+```powershell
 apt-get update && apt-get install rsyslog logrotate -y
 sudo sed -i '/^#module(load="im[ut][dc]p")/s/^#//; /^#input(type="im[ut][dc]p"/s/^#//' /etc/rsyslog.d/00_common.conf
 echo "$template RemoteLogs, "/opt/%HOSTNAME%/%HOSTNAME%.log"" >> /etc/rsyslog.d/00_common.conf
@@ -42,7 +42,7 @@ wr
 ```
 
 ## BR-SRV
-```bash
+```powershell
 apt-get update && apt-get install rsyslog logrotate rsyslog-journal -y
 sudo sed -i '/^#module(load="im\(journal\|uxsock\|klog\|mark\)")/s/^#//' /etc/rsyslog.d/00_common.conf
 sudo sed -i '/global(workDirectory="\/var\/spool\/rsyslog")/a *.warning @@192.168.1.10:514' /etc/rsyslog.d/00_common.conf

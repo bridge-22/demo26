@@ -34,7 +34,7 @@ systemctl status --now rsyslog
 en
 conf t
 rsyslog host 192.168.1.10 mode tcp port 514
-wr
+write
 ```
 
 ## BR-RTR
@@ -42,7 +42,7 @@ wr
 en
 conf t
 rsyslog host 192.168.1.10 mode tcp port 514
-wr
+write
 ```
 
 ## BR-SRV

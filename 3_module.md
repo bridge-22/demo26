@@ -27,6 +27,9 @@ sudo bash -c '(crontab -l 2>/dev/null; echo "0 0 * * 0 /usr/sbin/logrotate /etc/
 systemctl enable --now rsyslog
 systemctl start --now rsyslog
 systemctl status --now rsyslog
+echo "172.16.0.2 br-rtr" >> /etc/hosts
+systemctl restart network
+systemctl restart --now rsyslog
 ```
 
 ## HQ-RTR
@@ -61,4 +64,19 @@ logger -p user.warn "Test Warning Message"
 ```assembly
 ls /opt/
 logrotate -d /etc/logrotate.d/rsyslog 
+```
+
+> [!WARNING]
+> Если не появляется папка с логами для br-rtr, повторять следующее пока не заработает:
+
+## BR-RTR
+```assembly
+en
+telnet 192.168.1.10 port 514
+ctrl + ]
+send ayt
+br-rtr
+ctrl + ]
+send ayt
+br-rtr
 ```

@@ -70,7 +70,7 @@ logrotate -d /etc/logrotate.d/rsyslog
 > Если не появляется папка с логами для br-rtr, повторять следующее пока не заработает:
 
 ## BR-RTR
-```assembly
+```powershell
 en
 telnet 192.168.1.10 port 514
 ctrl + ]
@@ -80,3 +80,5 @@ ctrl + ]
 send ayt
 br-rtr
 ```
+
+### Если в файл Hosts не ввести **192.168.0.2 br-rtr** то, логи будут выдавать 192.168.0.2.

@@ -3,7 +3,11 @@
 ```powershell
 apt-get update && apt-get install rsyslog logrotate -y
 sudo sed -i '/^#module(load="im[ut][dc]p")/s/^#//; /^#input(type="im[ut][dc]p"/s/^#//' /etc/rsyslog.d/00_common.conf
-echo "$template RemoteLogs, "/opt/%HOSTNAME%/%HOSTNAME%.log"" >> /etc/rsyslog.d/00_common.conf
+cat << 'EOF' >> /etc/rsyslog.d/00_common.conf
+$template RemoteLogs, "/opt/%HOSTNAME%/%HOSTNAME%.log"
+if ($fromhost-ip != '127.0.0.1') then ?RemoteLogs
+& stop
+EOF
 cat << 'EOF' > /etc/logrotate.d/rsyslog
 /opt/*/*.log {
     weekly
@@ -19,7 +23,7 @@ cat << 'EOF' > /etc/logrotate.d/rsyslog
     endscript
 }
 EOF
-sudo bash -c '(crontab -l 2>/dev/null; echo "0 0 * * 0 /usr/sbin/logrotate -f /etc/logrotate.d/rsyslog") | crontab -'
+sudo bash -c '(crontab -l 2>/dev/null; echo "0 0 * * 0 /usr/sbin/logrotate /etc/logrotate.d/rsyslog") | crontab -'
 systemctl enable --now rsyslog
 systemctl start --now rsyslog
 systemctl status --now rsyslog

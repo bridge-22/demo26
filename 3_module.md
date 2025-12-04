@@ -53,7 +53,7 @@ sudo sed -i '/global(workDirectory="\/var\/spool\/rsyslog")/a *.warning @@192.16
 systemctl enable --now rsyslog
 systemctl start --now rsyslog
 systemctl status --now rsyslog
-logger «Test»
+logger -p user.warn "Test Warning Message"
 ```
 
 # Проверка
